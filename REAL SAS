@@ -1,0 +1,37 @@
+import os
+os.environ['HTTP_PROXY'] = 'http://proxy.sch239.net:3128'
+os.environ['HTTPS_PROXY'] = 'https://proxy.sch239.net:3128'
+
+import urllib.request
+req = urllib.request.Request(
+        'http://bash.im/',
+        data=None,
+        headers={
+                'User-Agent':'537.36 (KHTML, like Gecko) Chrome'
+        }
+)
+with urllib.request.urlopen(req) as response:
+    html_page = response.read()
+
+from html.parser import HTMLParser
+class MyHTMLParser(HTMLParser):
+    f = ''
+    met_p = False
+    def handle_starttag(self, tag, attrs):
+        if (tag == 'div' or tag == 'br') and (attrs == [('class', 'text')] or attrs == []):
+            MyHTMLParser.met_p = True
+    def handle_endtag(self, tag):
+        if (tag == 'div' or tag == 'br'):
+            MyHTMLParser.f += '\n'
+    def handle_data(self, data):
+        if MyHTMLParser.met_p:
+            MyHTMLParser.f += data + '\n'
+            MyHTMLParser.met_p = False
+
+parser = MyHTMLParser()
+parser.feed(html_page.decode('cp1251'))
+sas = parser.f.split('\n')
+for i in range(len(sas)-1):
+    if (sas[i] != '') or (sas[i+1] != ''):
+        print(sas[i])
+print(sas)

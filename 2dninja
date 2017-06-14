@@ -1,0 +1,35 @@
+import cocos
+from cocos.actions import *
+
+from pyglet.window.mouse import LEFT, RIGHT
+class MainScene(cocos.scene.Scene):
+	def __init__(self):
+		super().__init__()
+		self.add(AnimationLayer())
+
+class AnimationLayer(cocos.layer.Layer):
+	is_event_handler = True
+	def __init__(self):
+		super().__init__()
+		self.ninjar = cocos.sprite.Sprite('ninjar.png')
+		self.ninjal = cocos.sprite.Sprite('ninjal.png')
+		self.knife = cocos.sprite.Sprite('knife.png')
+		self.add(self.ninjar)
+		self.add(self.ninjal)
+		self.add(self.knife)
+		self.knife.y = self.ninjal.y = self.ninjar.y = 250
+		self.knife.x = self.ninjal.x = self.ninjar.x = 320
+		self.knife.do(FadeOut(duration=0.001))
+		self.ninjal.do(FadeOut(duration=0.001))
+		self.ninjar.do(FadeOut(duration=0.001))
+        
+	def on_mouse_press(self, x, y, buttons, modifiers):
+		if buttons & LEFT:
+			self.ninjal.do(FadeIn(duration=0.01) + Delay(0.5) + FadeOut(duration=0.01))
+			self.knife.do(FadeIn(duration=0.01) + MoveBy((-300,0),duration=0.5)|RotateBy((-360),duration=0.5)+ FadeOut(duration=0.01) + MoveTo((320,250),duration=0.01))
+		if buttons & RIGHT:
+			self.ninjar.do(FadeIn(duration=0.01) + Delay(0.5) + FadeOut(duration=0.01))
+			self.knife.do(FadeIn(duration=0.01) + MoveBy((300,0),duration=0.5)|RotateBy((360),duration=0.5) + FadeOut(duration=0.01) + MoveTo((320,250),duration=0.01))
+
+cocos.director.director.init()
+cocos.director.director.run(MainScene())

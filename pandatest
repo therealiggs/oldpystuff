@@ -1,0 +1,41 @@
+from direct.showbase.ShowBase import ShowBase
+class proj(ShowBase):
+	def __init__(self):
+		ShowBase.__init__(self)
+		self.monster = self.loader.loadModel('./monster/monster1-idle')
+		self.monster.reparentTo(self.render)
+		self.monster.setPos(0,0,0)
+		camera.setPos(0,20,0)
+		self.vz = 0.02
+		taskMgr.add(self.physic,'physic')
+		self.accept('w-repeat',self.moveUp)
+		self.accept('s-repeat',self.moveDown)
+		self.accept('a-repeat',self.moveLeft)
+		self.accept('d-repeat',self.moveRight)
+		self.accept('arrow_right',self.rotateZr)
+		self.accept('arrow_left',self.rotateZl)
+		self.accept('j',self.jump)
+	def jump(self):
+		self.vz += 0.2
+		self.monster.setZ(self.monster.getZ()+0.01)
+	def physic(self,task):
+		if self.monster.getZ() > 0:
+			self.vz -= 0.01
+			self.monster.setZ(self.monster.getZ()+self.vz)
+		if self.monster.getZ() <= 0:
+			self.vz = 0
+			self.monster.setZ(0)
+		return task.cont
+	def moveUp(self):
+		self.monster.setZ(self.monster.getZ()+0.2)
+	def moveDown(self):
+		self.monster.setZ(self.monster.getZ()-0.2)
+	def moveLeft(self):
+		self.monster.setX(self.monster.getX()-0.2)
+	def moveRight(self):
+		self.monster.setX(self.monster.getX()+0.2)
+	def rotateZl(self):
+		self.monster.setH(self.monster.getH()+90)
+	def rotateZr(self):
+		self.monster.setH(self.monster.getH()-90)  
+proj().run()
